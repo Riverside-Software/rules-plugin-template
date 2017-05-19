@@ -19,7 +19,6 @@ public class AcmeRulesDefinition implements RulesDefinition {
     AnnotationBasedRulesDefinition annotationLoader = new AnnotationBasedRulesDefinition(repository,
         Constants.LANGUAGE_KEY);
     annotationLoader.addRuleClasses(false, Arrays.<Class> asList(AcmeRulesRegistrar.ppCheckClasses()));
-    annotationLoader.addRuleClasses(false, Arrays.<Class> asList(AcmeRulesRegistrar.xrefCheckClasses()));
     annotationLoader.addRuleClasses(false, Arrays.<Class> asList(AcmeRulesRegistrar.dbCheckClasses()));
 
     repository.done();

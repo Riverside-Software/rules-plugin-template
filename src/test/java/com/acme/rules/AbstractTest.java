@@ -10,11 +10,11 @@ import org.sonar.api.batch.fs.internal.FileMetadata;
 import org.sonar.api.batch.fs.internal.FileMetadata.Metadata;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.plugins.openedge.api.Constants;
-import org.sonar.plugins.openedge.api.org.prorefactor.core.schema.Schema;
-import org.sonar.plugins.openedge.api.org.prorefactor.refactor.RefactorException;
-import org.sonar.plugins.openedge.api.org.prorefactor.refactor.RefactorSession;
-import org.sonar.plugins.openedge.api.org.prorefactor.refactor.settings.ProparseSettings;
-import org.sonar.plugins.openedge.api.org.prorefactor.treeparser.ParseUnit;
+import org.prorefactor.core.schema.Schema;
+import org.prorefactor.refactor.RefactorException;
+import org.prorefactor.refactor.RefactorSession;
+import org.prorefactor.refactor.settings.ProparseSettings;
+import org.prorefactor.treeparser.ParseUnit;
 import org.testng.annotations.BeforeMethod;
 
 public abstract class AbstractTest {
