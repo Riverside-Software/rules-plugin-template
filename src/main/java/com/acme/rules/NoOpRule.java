@@ -8,8 +8,8 @@ import org.sonar.check.Rule;
 import org.sonar.plugins.openedge.api.LicenceRegistrar.Licence;
 import org.sonar.plugins.openedge.api.checks.OpenEdgeProparseCheck;
 import org.sonar.plugins.openedge.api.model.SqaleConstantRemediation;
+import org.prorefactor.core.ABLNodeType;
 import org.prorefactor.core.JPNode;
-import org.prorefactor.core.NodeTypes;
 import org.prorefactor.treeparser.ParseUnit;
 
 @Rule(priority = Priority.INFO, name = "No-op rule", tags = {"acme"})
@@ -28,7 +28,7 @@ public class NoOpRule extends OpenEdgeProparseCheck {
     // reportIssue(file, 1, "Message here...");
 
     // Report an issue on each MESSAGE keyword
-    // for (JPNode node : unit.getTopNode().query(NodeTypes.MESSAGE)) {
+    // for (JPNode node : unit.getTopNode().query(ABLNodeType.MESSAGE)) {
     //   reportIssue(file, node, "Message here...");
     // }
   }

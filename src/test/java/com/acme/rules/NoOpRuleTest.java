@@ -17,10 +17,10 @@ public class NoOpRuleTest extends AbstractTest {
   }
 
   @Test
-  public void test1() throws IOException {
+  public void test1() {
     InputFile inputFile = getInputFile("noop01.p");
     NoOpRule rule = new NoOpRule(ruleKey, context, null);
-    rule.execute(inputFile, getParseUnit(inputFile));
+    rule.sensorExecute(inputFile, getParseUnit(inputFile));
 
     // This line has to be updated to match the rule's logic
     Assert.assertEquals(context.allIssues().size(), 0);
