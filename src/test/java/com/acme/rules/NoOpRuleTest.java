@@ -1,7 +1,5 @@
 package com.acme.rules;
 
-import java.io.IOException;
-
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.rule.RuleKey;
 import org.testng.Assert;
@@ -19,7 +17,9 @@ public class NoOpRuleTest extends AbstractTest {
   @Test
   public void test1() {
     InputFile inputFile = getInputFile("noop01.p");
-    NoOpRule rule = new NoOpRule(ruleKey, context, null);
+    NoOpRule rule = new NoOpRule();
+    rule.setContext(ruleKey, context, null);
+    rule.initialize();
     rule.sensorExecute(inputFile, getParseUnit(inputFile));
 
     // This line has to be updated to match the rule's logic

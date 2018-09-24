@@ -15,6 +15,7 @@ import org.sonar.api.batch.fs.InputFile.Type;
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.internal.google.common.io.Files;
+import org.sonar.api.rule.RuleKey;
 import org.sonar.plugins.openedge.api.Constants;
 import org.sonar.plugins.openedge.api.objects.DatabaseWrapper;
 import org.testng.annotations.BeforeMethod;
@@ -28,12 +29,16 @@ public abstract class AbstractTest {
   private static final String BASEDIR = "src/test/resources/";
 
   protected SensorContextTester context;
+  protected RuleKey ruleKey;
+
   private RefactorSession session;
   private Schema schema;
 
   // FIXME Should be BeforeTest
   @BeforeMethod
   public void initContext() throws IOException {
+    ruleKey = RuleKey.parse(Constants.RSSW_REPOSITORY_KEY + ":" + this.getClass().getName());
+
     try (FileInputStream input = new FileInputStream("src/test/resources/sp2k.schema")) {
       schema = new Schema(new DatabaseWrapper(DatabaseDescription.deserialize(input, "sp2k")));
       session = new RefactorSession(new ProparseSettings("src/test/resources"), schema);

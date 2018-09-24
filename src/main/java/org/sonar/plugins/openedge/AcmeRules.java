@@ -8,8 +8,7 @@ public class AcmeRules implements Plugin {
   public void define(Context context) {
     // Rules
     context.addExtension(AcmeRulesDefinition.class);
-    context.addExtension(AcmeDbRulesDefinition.class);
-    context.addExtension(AcmeRulesRegistrar.class);
+    context.addExtension(AcmeChecksRegistration.class);
   }
 
 }
