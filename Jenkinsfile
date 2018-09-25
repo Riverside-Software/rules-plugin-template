@@ -2,7 +2,6 @@
 
 stage 'Build OpenEdge rules'
 node ('master') {
-  gitClean()
   checkout scm
   withEnv(["PATH+MAVEN=${tool name: 'Maven 3', type: 'hudson.tasks.Maven$MavenInstallation'}/bin"]) {
     sh "git rev-parse HEAD > current-commit"
