@@ -12,6 +12,7 @@ import org.sonar.plugins.openedge.api.checks.OpenEdgeDumpFileCheck;
 import org.sonar.plugins.openedge.api.checks.OpenEdgeProparseCheck;
 
 import com.acme.rules.NoOpRule;
+import com.acme.rules.TooManyParameters;
 
 public class AcmeRulesDefinition implements RulesDefinition, CheckRegistration {
   private static final Logger LOGGER = LoggerFactory.getLogger(AcmeRulesDefinition.class);
@@ -58,7 +59,7 @@ public class AcmeRulesDefinition implements RulesDefinition, CheckRegistration {
    */
   @SuppressWarnings("unchecked")
   public static Class<? extends OpenEdgeProparseCheck>[] ppCheckClasses() {
-    return new Class[] {NoOpRule.class};
+    return new Class[] {NoOpRule.class, TooManyParameters.class};
   }
 
   @SuppressWarnings("unchecked")
