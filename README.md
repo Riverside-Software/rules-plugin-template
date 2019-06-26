@@ -1,8 +1,8 @@
 # ACME Rules
 
-This module is a template plugin for SonarQube, which adds a sample OpenEdge rule.
+This project is a template for [custom OpenEdge rules](https://github.com/Riverside-Software/sonar-openedge) in [SonarQube](https://www.sonarqube.org).
 
 ## How to build
 
-First clone the Riverside-Software/sonar-openedge plugin, and execute `mvn install`, then execute `mvn package` in this module.
-Deploy to your SonarQube instance by pushing the JAR file in `target` directory to `$SONAR_HOME/extensions/downloads`.
+* Clone the project locally, then execute `mvn package`.
+* Deploy to your SonarQube instance by pushing the JAR file in `target` directory to `$SONAR_HOME/extensions/downloads`.
