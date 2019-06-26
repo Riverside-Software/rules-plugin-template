@@ -20,7 +20,6 @@ import org.sonar.plugins.openedge.api.Constants;
 import org.sonar.plugins.openedge.api.objects.DatabaseWrapper;
 import org.testng.annotations.BeforeMethod;
 
-import antlr.ANTLRException;
 import eu.rssw.antlr.database.objects.DatabaseDescription;
 import eu.rssw.pct.RCodeInfo;
 import eu.rssw.pct.RCodeInfo.InvalidRCodeException;
@@ -84,11 +83,12 @@ public abstract class AbstractTest {
   }
 
   public ParseUnit getParseUnit(InputFile file) {
-    ParseUnit unit = new ParseUnit(file.file(), session);
+    ParseUnit unit = null;
     try {
+      unit = new ParseUnit(file.inputStream(), file.filename(), session);
       unit.treeParser01();
       unit.attachTypeInfo(session.getTypeInfo(unit.getRootScope().getClassName()));
-    } catch (ANTLRException caught) {
+    } catch (IOException caught) {
       throw new RuntimeException("Unable to parse file", caught);
     }
     return unit;
