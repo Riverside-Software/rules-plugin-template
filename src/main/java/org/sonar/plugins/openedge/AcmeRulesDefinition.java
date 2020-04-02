@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sonar.api.SonarRuntime;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.plugins.openedge.api.AnnotationBasedRulesDefinition;
 import org.sonar.plugins.openedge.api.CheckRegistration;
@@ -21,20 +22,26 @@ public class AcmeRulesDefinition implements RulesDefinition, CheckRegistration {
   public static final String DB_REPOSITORY_KEY = "acme-db-rules";
   public static final String REPOSITORY_NAME = "OpenEdge rules (ACME)";
 
+  private final SonarRuntime runtime;
+
+  public AcmeRulesDefinition(SonarRuntime runtime) {
+    this.runtime = runtime;
+  }
+
   @SuppressWarnings("rawtypes")
   @Override
   public void define(Context context) {
     NewRepository repository = context.createRepository(REPOSITORY_KEY, Constants.LANGUAGE_KEY).setName(
         REPOSITORY_NAME);
     AnnotationBasedRulesDefinition annotationLoader = new AnnotationBasedRulesDefinition(repository,
-        Constants.LANGUAGE_KEY);
+        Constants.LANGUAGE_KEY, runtime);
     annotationLoader.addRuleClasses(false, Arrays.<Class> asList(ppCheckClasses()));
     repository.done();
 
     NewRepository dbRepository = context.createRepository(DB_REPOSITORY_KEY, Constants.DB_LANGUAGE_KEY).setName(
         REPOSITORY_NAME);
     AnnotationBasedRulesDefinition annotationLoader2 = new AnnotationBasedRulesDefinition(dbRepository,
-        Constants.DB_LANGUAGE_KEY);
+        Constants.DB_LANGUAGE_KEY, runtime);
     annotationLoader2.addRuleClasses(false, Arrays.<Class> asList(dbCheckClasses()));
     dbRepository.done();
   }
