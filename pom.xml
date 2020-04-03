@@ -50,8 +50,8 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>eu.rssw.openedge.checks</groupId>
-      <artifactId>openedge-checks</artifactId>
+      <groupId>eu.rssw.sonar.openedge</groupId>
+      <artifactId>sonar-openedge-plugin</artifactId>
       <version>2.7.0</version>
       <scope>provided</scope>
     </dependency>
