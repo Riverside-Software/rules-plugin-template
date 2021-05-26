@@ -18,6 +18,6 @@ jobs:
         distribution: 'adopt'
 
     - name: Build with Maven
-      run: mvn -s github-settings.xml -Dusername=${{ github.actor }} -Dpassword=${{ secrets.GITHUB_TOKEN }} -B deploy
+      run: mvn -P github -B -ntp deploy
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
