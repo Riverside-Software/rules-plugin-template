@@ -6,6 +6,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.sax.SAXSource;
+
 import org.prorefactor.core.schema.Schema;
 import org.prorefactor.refactor.RefactorSession;
 import org.prorefactor.refactor.settings.ProparseSettings;
@@ -19,6 +27,13 @@ import org.sonar.api.rule.RuleKey;
 import org.sonar.plugins.openedge.api.Constants;
 import org.sonar.plugins.openedge.api.objects.DatabaseWrapper;
 import org.testng.annotations.BeforeMethod;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
+
+import com.progress.xref.CrossReference;
 
 import eu.rssw.antlr.database.objects.DatabaseDescription;
 import eu.rssw.pct.RCodeInfo;
@@ -32,11 +47,27 @@ public abstract class AbstractTest {
 
   private RefactorSession session;
   private Schema schema;
+  private JAXBContext jaxbContext;
+  private SAXParserFactory saxParserFactory;
+  private Unmarshaller unmarshaller;
 
+  
   // FIXME Should be BeforeTest
   @BeforeMethod
   public void initContext() throws IOException {
     ruleKey = RuleKey.parse(Constants.RSSW_REPOSITORY_KEY + ":" + this.getClass().getName());
+
+    saxParserFactory = SAXParserFactory.newInstance();
+    saxParserFactory.setNamespaceAware(false);
+
+    try {
+      saxParserFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+      jaxbContext = JAXBContext.newInstance("com.progress.xref", CrossReference.class.getClassLoader());
+      unmarshaller = jaxbContext.createUnmarshaller();
+    } catch (ParserConfigurationException | JAXBException | SAXNotRecognizedException
+        | SAXNotSupportedException caught) {
+      throw new IllegalStateException(caught);
+    }
 
     try (FileInputStream input = new FileInputStream("src/test/resources/sp2k.schema")) {
       schema = new Schema(new DatabaseWrapper(DatabaseDescription.deserialize(input, "sp2k")));
@@ -86,6 +117,9 @@ public abstract class AbstractTest {
     ParseUnit unit = null;
     try {
       unit = new ParseUnit(file.inputStream(), file.filename(), session);
+      CrossReference xref = jaxbXREF(new File("src/test/resources/" + file.filename() + ".xref"));;
+      System.out.println(file.filename());
+      unit.attachXref(xref);
       unit.treeParser01();
       unit.attachTypeInfo(session.getTypeInfo(unit.getRootScope().getClassName()));
     } catch (IOException caught) {
@@ -93,4 +127,22 @@ public abstract class AbstractTest {
     }
     return unit;
   }
+
+  private CrossReference jaxbXREF(File xrefFile) {
+    CrossReference doc = null;
+    if ((xrefFile != null) && xrefFile.exists()) {
+      try (InputStream inpStream = new FileInputStream(xrefFile)) {
+        long startTime = System.currentTimeMillis();
+        InputSource is = new InputSource(inpStream);
+        XMLReader reader = saxParserFactory.newSAXParser().getXMLReader();
+        SAXSource source = new SAXSource(reader, is);
+        doc = (CrossReference) unmarshaller.unmarshal(source);
+      } catch (JAXBException | SAXException | ParserConfigurationException | IOException caught) {
+        System.out.println("Unable to parse XREF file " + xrefFile.getAbsolutePath());
+      }
+    }
+
+    return doc;
+  }
+
 }

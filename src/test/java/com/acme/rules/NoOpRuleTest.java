@@ -23,7 +23,7 @@ public class NoOpRuleTest extends AbstractTest {
     rule.sensorExecute(inputFile, getParseUnit(inputFile));
 
     // This line has to be updated to match the rule's logic
-    Assert.assertEquals(context.allIssues().size(), 0);
+    Assert.assertEquals(context.allIssues().size(), 1);
   }
 
 }
