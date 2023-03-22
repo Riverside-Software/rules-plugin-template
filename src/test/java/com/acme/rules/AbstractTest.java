@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
 
 import org.prorefactor.core.schema.Schema;
 import org.prorefactor.refactor.RefactorSession;
@@ -14,7 +16,6 @@ import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.InputFile.Type;
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
-import org.sonar.api.internal.google.common.io.Files;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.plugins.openedge.api.Constants;
 import org.sonar.plugins.openedge.api.objects.DatabaseWrapper;
@@ -44,16 +45,16 @@ public abstract class AbstractTest {
     }
 
     // Inject all rcodes
-    for (File f : Files.fileTreeTraverser().preOrderTraversal(new File("src/test/resources"))) {
-      if (f.isFile() && f.getName().endsWith(".r")) {
-        try (InputStream is = new FileInputStream(f)) {
+    Files.walk(new File("src/test/resources").toPath(), FileVisitOption.FOLLOW_LINKS) //
+      .filter(it -> Files.isRegularFile(it) && it.getFileName().toString().endsWith(".r")) //
+      .forEach(it -> {
+        try (InputStream is = Files.newInputStream(it)) {
           RCodeInfo rci = new RCodeInfo(is);
           session.injectTypeInfo(rci.getTypeInfo());
         } catch (IOException | InvalidRCodeException uncaught) {
           // No-op
         }
-      }
-    }
+      });
   }
 
   @BeforeMethod
@@ -65,7 +66,8 @@ public abstract class AbstractTest {
       context.fileSystem().add(
           TestInputFileBuilder.create(BASEDIR, "inc/" + f.getName()).setLanguage(Constants.LANGUAGE_KEY).setType(
               Type.MAIN).setCharset(Charset.defaultCharset()).setContents(
-                  Files.toString(new File(BASEDIR, "inc/" + f.getName()), Charset.defaultCharset())).build());
+                  Files.readString(new File(BASEDIR, "inc/" + f.getName()).toPath(),
+                      Charset.defaultCharset())).build());
     }
   }
 
@@ -73,7 +75,7 @@ public abstract class AbstractTest {
     try {
       InputFile inputFile = TestInputFileBuilder.create(BASEDIR, file).setLanguage(Constants.LANGUAGE_KEY).setType(
           Type.MAIN).setCharset(Charset.defaultCharset()).setContents(
-              Files.toString(new File(BASEDIR, file), Charset.defaultCharset())).build();
+              Files.readString(new File(BASEDIR, file).toPath(), Charset.defaultCharset())).build();
       context.fileSystem().add(inputFile);
 
       return inputFile;
