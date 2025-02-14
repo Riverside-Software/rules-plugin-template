@@ -4,9 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.prorefactor.core.schema.Schema;
 import org.prorefactor.refactor.RefactorSession;
@@ -26,7 +29,7 @@ import eu.rssw.pct.RCodeInfo;
 import eu.rssw.pct.RCodeInfo.InvalidRCodeException;
 
 public abstract class AbstractTest {
-  private static final String BASEDIR = "src/test/resources/";
+  private static final Path BASEDIR = Path.of("src/test/resources/");
 
   protected SensorContextTester context;
   protected RuleKey ruleKey;
@@ -59,23 +62,36 @@ public abstract class AbstractTest {
 
   @BeforeMethod
   public void initTest() throws IOException {
-    context = SensorContextTester.create(new File(BASEDIR));
+    context = SensorContextTester.create(BASEDIR.toAbsolutePath());
 
     // Common include files have to be referenced in the FileSystem object
-    for (File f : new File(BASEDIR + "inc").listFiles()) {
-      context.fileSystem().add(
-          TestInputFileBuilder.create(BASEDIR, "inc/" + f.getName()).setLanguage(Constants.LANGUAGE_KEY).setType(
-              Type.MAIN).setCharset(Charset.defaultCharset()).setContents(
-                  Files.readString(new File(BASEDIR, "inc/" + f.getName()).toPath(),
-                      Charset.defaultCharset())).build());
-    }
+    Files.walk(BASEDIR.resolve("inc")).filter(Files::isRegularFile) //
+      .filter(it -> it.getFileName().toString().endsWith(".i")) //
+      .forEach(it -> {
+        try {
+          String content = Files.readString(it, StandardCharsets.UTF_8);
+          InputFile inputFile = TestInputFileBuilder.create("module", BASEDIR.toFile(), it.toFile()) //
+            .setLanguage(Constants.LANGUAGE_KEY) //
+            .setType(Type.MAIN) //
+            .setCharset(StandardCharsets.UTF_8) //
+            .setContents(content) //
+            .build();
+          context.fileSystem().add(inputFile);
+        } catch (IOException caught) {
+          throw new UncheckedIOException(caught);
+        }
+      });
   }
 
   public InputFile getInputFile(String file) {
     try {
-      InputFile inputFile = TestInputFileBuilder.create(BASEDIR, file).setLanguage(Constants.LANGUAGE_KEY).setType(
-          Type.MAIN).setCharset(Charset.defaultCharset()).setContents(
-              Files.readString(new File(BASEDIR, file).toPath(), Charset.defaultCharset())).build();
+      String content = Files.readString(BASEDIR.resolve(file), StandardCharsets.UTF_8);
+      InputFile inputFile = TestInputFileBuilder.create("module", BASEDIR.toFile(), BASEDIR.resolve(file).toFile()) //
+        .setLanguage(Constants.LANGUAGE_KEY) //
+        .setType(Type.MAIN) //
+        .setCharset(StandardCharsets.UTF_8) //
+        .setContents(content) //
+        .build();
       context.fileSystem().add(inputFile);
 
       return inputFile;
@@ -87,12 +103,12 @@ public abstract class AbstractTest {
   public ParseUnit getParseUnit(InputFile file) {
     ParseUnit unit = null;
     try {
-      unit = new ParseUnit(file.inputStream(), file.filename(), session);
+      unit = new ParseUnit(file.inputStream(), file.filename(), session, file.charset());
       unit.treeParser01();
-      unit.attachTypeInfo(session.getTypeInfo(unit.getRootScope().getClassName()));
     } catch (IOException caught) {
       throw new RuntimeException("Unable to parse file", caught);
     }
+
     return unit;
   }
 }
