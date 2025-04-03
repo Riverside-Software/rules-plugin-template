@@ -89,6 +89,7 @@
           <basePlugin>openedge</basePlugin>
           <requirePlugins>openedge:3.0.0</requirePlugins>
           <pluginApiMinVersion>9.14</pluginApiMinVersion>
+          <sonarLintSupported>true</sonarLintSupported>
           <skipDependenciesPackaging>true</skipDependenciesPackaging>
           <archive>
             <manifestEntries>
