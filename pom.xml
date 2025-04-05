@@ -90,7 +90,9 @@
           <requirePlugins>openedge:3.0.0</requirePlugins>
           <pluginApiMinVersion>9.14</pluginApiMinVersion>
           <sonarLintSupported>true</sonarLintSupported>
+          <jreMinVersion>17</jreMinVersion>
           <skipDependenciesPackaging>true</skipDependenciesPackaging>
+          <requiredForLanguages>oe,oedb</requiredForLanguages>
           <archive>
             <manifestEntries>
               <Implementation-Build>${git.commit}</Implementation-Build>
