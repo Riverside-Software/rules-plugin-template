@@ -52,7 +52,7 @@
     <dependency>
       <groupId>eu.rssw.openedge.checks</groupId>
       <artifactId>openedge-checks</artifactId>
-      <version>3.0.0</version>
+      <version>3.5.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -64,7 +64,7 @@
     <dependency>
       <groupId>org.sonarsource.sonarqube</groupId>
       <artifactId>sonar-plugin-api-impl</artifactId>
-      <version>9.9.2.77730</version>
+      <version>10.7.0.96327</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -88,7 +88,8 @@
           <pluginClass>${sonar.pluginClass}</pluginClass>
           <basePlugin>openedge</basePlugin>
           <requirePlugins>openedge:3.0.0</requirePlugins>
-          <pluginApiMinVersion>9.14</pluginApiMinVersion>
+          <!-- SonarQube 10.8 -->
+          <pluginApiMinVersion>10.14</pluginApiMinVersion>
           <sonarLintSupported>true</sonarLintSupported>
           <jreMinVersion>17</jreMinVersion>
           <skipDependenciesPackaging>true</skipDependenciesPackaging>
