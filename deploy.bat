@@ -1,1 +1,1 @@
-mvn -DsonarHome=%SONAR_HOME% org.codehaus.sonar:sonar-dev-maven-plugin::upload
+xcopy target\acme-rules-plugin-*.jar %SONAR_HOME%\extensions\downloads /y

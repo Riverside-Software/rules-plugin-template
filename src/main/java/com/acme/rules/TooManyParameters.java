@@ -25,20 +25,23 @@ public class TooManyParameters extends OpenEdgeProparseCheck {
     for (var node : unit.getTopNode().query(ABLNodeType.RUN, ABLNodeType.PUBLISH, ABLNodeType.DYNAMICNEW)) {
       var list = getFirstDirectChild(node, ABLNodeType.PARAMETER_LIST);
       if (list != null) {
-          int numComma = getDirectChildren(list, ABLNodeType.COMMA).size();
-          if (numComma + 1 >= numParameters) {
-            // Just a quick-fix example...
-            var issue = createIssue(file, node, String.format("Statement has %d parameters", numComma), true);
-            if ((issue != null) && (node.getFileIndex() == 0)) {
-              var fix = issue.newQuickFix();
-              var edit = fix.newInputFileEdit().on(file);
-              var textEdit = edit.newTextEdit().at(file.newRange(node.getLine(), node.getColumn(), node.getEndLine(), node.getEndColumn())).withNewText("/* Add comment */" + node.getText());
-              edit.addTextEdit(textEdit);
-              issue.addQuickFix(fix);
-              // Don't forget to save issue!
-              issue.save();
-            }
+        int numComma = getDirectChildren(list, ABLNodeType.COMMA).size();
+        if (numComma + 1 >= numParameters) {
+          // Just a quick-fix example...
+          var issue = createIssue(file, node, String.format("Statement has %d parameters", numComma + 1), true);
+          if ((issue != null) && (node.getFileIndex() == 0)) {
+            var fix = issue.newQuickFix().message("Quickfix message");
+            var edit = fix.newInputFileEdit().on(file);
+            var textEdit = edit.newTextEdit().at(
+                file.newRange(node.getLine(), node.getColumn(), node.getEndLine(), node.getEndColumn())).withNewText(
+                    "/* Add comment */" + node.getText());
+            edit.addTextEdit(textEdit);
+            fix.addInputFileEdit(edit);
+            issue.addQuickFix(fix);
+            // Don't forget to save issue!
+            issue.save();
           }
+        }
       }
     }
     // Method call == ID followed by METHOD_PARAM_LIST
@@ -47,7 +50,7 @@ public class TooManyParameters extends OpenEdgeProparseCheck {
         continue;
       int numComma = getDirectChildren(node, ABLNodeType.COMMA).size();
       if (numComma + 1 >= numParameters) {
-        reportIssue(file, node.getPreviousNode(), String.format("Method call has %d parameters", numComma));
+        reportIssue(file, node.getPreviousNode(), String.format("Method call has %d parameters", numComma + 1));
       }
     }
     // No PARAMETER_LIST wrapper on DYNAMIC-FUNCTION and DYNAMIC-INVOKE, just a LEFTPAREN following the keyword
@@ -55,7 +58,7 @@ public class TooManyParameters extends OpenEdgeProparseCheck {
       // Function / method name is the first argument, so remove 1 from total
       int numComma = getDirectChildren(node, ABLNodeType.COMMA).size();
       if (numComma >= numParameters) {
-        reportIssue(file, node, String.format("Statement has %d parameters", numComma));
+        reportIssue(file, node, String.format("Statement has %d parameters", numComma + 1));
       }
     }
   }
