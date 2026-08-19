@@ -18,7 +18,11 @@ import org.sonar.plugins.openedge.api.model.SqaleConstantRemediation;
 public class TooManyParameters extends OpenEdgeProparseCheck {
 
   @RuleProperty(description = "Number of parameters", defaultValue = "15")
-  public int numParameters = 15;
+  private int numParameters = 15;
+
+  public void setNumParameters(int numParameters) {
+    this.numParameters = numParameters;
+  }
 
   @Override
   public void execute(InputFile file, ParseUnit unit) {

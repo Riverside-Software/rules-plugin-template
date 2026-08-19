@@ -4,7 +4,7 @@
 
   <groupId>eu.rssw.sonar.openedge</groupId>
   <artifactId>acme-rules-plugin</artifactId>
-  <version>3.0.0</version>
+  <version>3.1.0</version>
   <packaging>sonar-plugin</packaging>
 
   <name>ACME rules for OpenEdge plugin</name>
@@ -52,7 +52,7 @@
     <dependency>
       <groupId>eu.rssw.openedge.checks</groupId>
       <artifactId>openedge-checks</artifactId>
-      <version>3.5.0</version>
+      <version>3.9.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -87,7 +87,7 @@
           <pluginName>${sonar.pluginName}</pluginName>
           <pluginClass>${sonar.pluginClass}</pluginClass>
           <basePlugin>openedge</basePlugin>
-          <requirePlugins>openedge:3.0.0</requirePlugins>
+          <requirePlugins>openedge:3.9.0</requirePlugins>
           <!-- SonarQube 10.8 -->
           <pluginApiMinVersion>10.14</pluginApiMinVersion>
           <sonarLintSupported>true</sonarLintSupported>

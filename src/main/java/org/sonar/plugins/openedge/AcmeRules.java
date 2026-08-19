@@ -7,7 +7,7 @@ public class AcmeRules implements Plugin {
   @Override
   public void define(Context context) {
     // Rules
-    context.addExtension(AcmeRulesDefinition.class);
+    context.addExtensions(AcmeRulesDefinition.class, AcmeRulesChecksProvider.class);
   }
 
 }

@@ -16,7 +16,7 @@ public class TooManyParametersTest extends AbstractTest {
     TooManyParameters rule = new TooManyParameters();
     rule.setContext(ruleKey, context, null);
     rule.initialize();
-    rule.numParameters = 5;
+    rule.setNumParameters(5);
     rule.sensorExecute(inputFile, getParseUnit(inputFile));
 
     List<Integer> lines = context.allIssues().stream().map(
